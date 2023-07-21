@@ -17,7 +17,7 @@ function MyStack() {
         <HomeStackNavigator.Navigator
             initialRouteName='LoginScreen'
         >
-            <HomeStackNavigator.Screen name="HomeScreen" component={MyTabs} />
+            <HomeStackNavigator.Screen name="HomeScreen" component={MyTabs} options={{ headerShown: false }}/>
             <HomeStackNavigator.Screen name="LoginScreen" component={Login} />
             <HomeStackNavigator.Screen name="SettingsScreen" component={Settings} />
             <HomeStackNavigator.Screen name="RegisterScreen" component={Register} />

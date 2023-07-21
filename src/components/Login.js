@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native'
@@ -40,7 +40,8 @@ export default function Login() {
         console.log('Error al guardar el token:', error);
       }
     }else{
-      console.log('Inicio de sesion fallido:', data);
+      console.log('Inicio de sesion fallido:', data.message);
+      Alert.alert(data.message)
     }
 
       console.log(token);

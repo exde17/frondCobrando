@@ -7,15 +7,13 @@ import { View,
   Alert, 
   ActivityIndicator,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Modal
 } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import Constants from 'expo-constants'
 import axiosInstance from '../intersect/axiosInstance'
-// import { useToast } from 'react-native-toast-message';
-// import { Toast } from 'react-native-toast-message/lib/src/Toast'
-
 
 export default function Barrio() {
     const navigation = useNavigation();
@@ -23,13 +21,15 @@ export default function Barrio() {
     const [nombre, setNombre]= useState('')
     const [barrios, setBarrios] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedBarrio, setSelectedBarrio] = useState(null);
+    const [visible, setVisible] = useState(false);
     let num = 1; 
 
   // Obtener la lista de barrios desde la API
   const obtenerBarrios = async () => {
     try {
       const response = await axiosInstance.get(`${url}api/barrio`);
-      console.log('Datos recibidos:', response.data);
+      // console.log('Datos recibidos:', response.data);
       setBarrios(response.data);
       setLoading(false); // Indicar que ya se han cargado los datos
     } catch (error) {
@@ -44,41 +44,53 @@ export default function Barrio() {
     // console.log('loading:', loading);
   }, []);
 
-   // Funciones de edición y eliminación
-   const editarBarrio = (id) => {
+  // guardo el nombre del barrio seleccionado en el estado selecBarrio
+  const editarBarrio = (id) => {
     console.log('Editar barrio con ID:', id);
-    // console.log('datos: ', barrios)
+    const barrio = barrios.find((item) => item.id === id);
+    setSelectedBarrio(barrio);
+    setVisible(true);
   };
 
-  //eliminar barrio
-  // const eliminarBarrioConfirmado = async (id) => {
-  //   try {
-  //     Alert.alert(
-  //       'Confirmar eliminación',
-  //       '¿Estás seguro de eliminar el barrio?',
-  //       [
-  //         {text: 'Sí'},
-  //         {text: 'No'},
-  //       ],
-  //     );
+  //controlamos si es ono visible el modal
+  const handleVisibleModal = () => {
+    setSelectedBarrio(null); // Reinicia el estado del barrio seleccionado a null
+    setVisible(!visible); // Cambia el estado de visibilidad del Modal
+  };
 
-
-  //     const response = await axiosInstance.delete(`${url}api/barrio/${id}`);
-  //     console.log(response.data);
-  //     Alert.alert('Éxito', 'El barrio se ha eliminado correctamente.');
-      
-  //     obtenerBarrios();
-  //   } catch (error) {
-  //     console.log(error);
-  //     Alert.alert('Error', 'Ha ocurrido un error al eliminar el barrio. Por favor, inténtalo nuevamente.');
-  //   }
-
+  ///////////editapropio barrio
+  const handleUpdateBarrio = async () => {
+    try {
+      const response = await axiosInstance.patch(
+        `${url}api/barrio/updateBarrio/${selectedBarrio.id}`,
+        JSON.stringify({
+          nombre_barrio: selectedBarrio.nombre_barrio,
+        })
+      );
+      console.log(response.data);
+      Alert.alert('Éxito', 'El barrio se ha actualizado correctamente.');
+      obtenerBarrios();
+      handleVisibleModal(); // Cierra el Modal después de actualizar
+    } catch (error) {
+      console.log(error);
+      Alert.alert(
+        'Error',
+        'Ha ocurrido un error al actualizar el barrio. Por favor, inténtalo nuevamente.'
+      );
+    }
+  };
+  
+  
+  //eliminar
   const eliminarBarrioConfirmado = async (id) => {
-    console.log('el mero: ', id)
+    
+    const barrio = barrios.find((item) => item.id === id);
+    setSelectedBarrio(barrio);
+
     console.log('la ruta: ',`${url}api/barrio/eliminar/${id}`)
     Alert.alert(
       'Confirmar eliminación',
-      '¿Estás seguro de eliminar el barrio?',
+      `¿Estás seguro de eliminar el barrio ${barrio.nombre_barrio}?`,
       [
         {
           text: 'Sí',
@@ -86,7 +98,7 @@ export default function Barrio() {
             try {
               const response = await axiosInstance.delete(`${url}api/barrio/eliminar/${id}`);
               console.log(response.data);
-              Alert.alert('Éxito', 'El barrio se ha eliminado correctamente.');
+              Alert.alert('Éxito', `El barrio ${barrio.nombre_barrio} se ha eliminado correctamente.`);
               obtenerBarrios();
             } catch (error) {
               console.log(error);
@@ -127,6 +139,33 @@ export default function Barrio() {
             
   return (
     <SafeAreaView>
+      {/* ///////////////////////modal de editar///////////////////////////7 */}
+      <Modal
+        animationType="slide"
+        visible={visible}
+        onRequestClose={handleVisibleModal}
+      >
+        {selectedBarrio && (
+          <View style={styles.form}>
+            <TouchableOpacity onPress={handleVisibleModal}>
+              <Text style={styles.txtClose}>Close</Text>
+            </TouchableOpacity>
+            <TextInput
+              value={selectedBarrio.nombre_barrio}
+              style={styles.text_input}
+              placeholder="Nombre del Barrio"
+              onChangeText={(text) =>
+                setSelectedBarrio({ ...selectedBarrio, nombre_barrio: text })
+              }
+            />
+            <TouchableOpacity onPress={handleUpdateBarrio} style={styles.btnContainer}>
+              <Text style={styles.textButton}>Actualizar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Modal>
+
+      {/* //////////////////////////////////////////////////////7 */}
     <View
         style={styles.container}
     >
@@ -145,7 +184,7 @@ export default function Barrio() {
 
       </TouchableOpacity>
 
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {barrios.map((item,index)=>{
                     
                     return(
@@ -153,8 +192,8 @@ export default function Barrio() {
                             <View>
                                 <Text style={styles.txt_name}>{index+1}</Text>
                                 <Text style={styles.txt_item}>{item.nombre_barrio}</Text>
-                                {/* <Text style={item.status === 1 ? styles.txt_enabled : styles.txt_disabled}>{item.status === 1 ? "Enabled" : "Disabled"}</Text> */}
                             </View>
+                            
                             <View>
                                 <TouchableOpacity
                                     onPress={()=>eliminarBarrioConfirmado(item.id)}
@@ -173,6 +212,7 @@ export default function Barrio() {
                 })}
             </ScrollView>
     </View>
+    {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   )
 }
@@ -278,8 +318,12 @@ const styles = StyleSheet.create({
   txt_name : {
       fontSize : 18,
       marginTop : 5,
-      fontWeight : "bold"
+      
+      // fontWeight : "bold"
   },
+  // vista_name:{
+  //   paddingLeft: '10%'
+  // },
   txt_item : {
       fontSize : 14,
       marginTop : 5
@@ -322,5 +366,9 @@ const styles = StyleSheet.create({
   textButton : {
       textAlign : "center",
       color : "#FFF"
+  },
+  scrollViewContent: {
+    paddingBottom: 190, // Ajusta el valor según el espacio necesario para el botón
+    // width: '120%'
   },
   })
