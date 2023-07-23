@@ -6,9 +6,12 @@ import Settings from './src/components/Settings'
 import Register from './src/components/Register';
 import Login from './src/components/Login';
 import Barrio from './src/components/Barrio';
+import Ruta from './src/components/Ruta';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+
 
 const HomeStackNavigator = createNativeStackNavigator();
 
@@ -22,6 +25,7 @@ function MyStack() {
             <HomeStackNavigator.Screen name="SettingsScreen" component={Settings} />
             <HomeStackNavigator.Screen name="RegisterScreen" component={Register} />
             <HomeStackNavigator.Screen name="BarrioScreen" component={Barrio} />
+            <HomeStackNavigator.Screen name="RutaScreen" component={Ruta} />
             
         </HomeStackNavigator.Navigator>
     );
@@ -67,6 +71,17 @@ function MyTabs() {
         tabBarLabel: 'Barrio',
         tabBarIcon: ({ color, size }) => (
             <Entypo name="login" size={24} color={color} />
+            ),
+      }}
+      />
+
+      <Tab.Screen 
+      name='Ruta'
+      component={Ruta}
+      options={{
+        tabBarLabel: 'Ruta',
+        tabBarIcon: ({ color, size }) => (
+          <FontAwesome5 name="route" size={24} color="black" />
             ),
       }}
       />
