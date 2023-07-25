@@ -1,25 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, SafeAreaView, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import axiosInstance from '../../intersect/axiosInstance'
 import Constants from 'expo-constants'
 import { Table, Row, Rows, Cell } from 'react-native-table-component';
-// import { xorBy } from 'lodash'
-// import SelectBox from 'react-native-multi-selectbox'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { Alert } from 'react-native';
 
 
 export default function ListRutas() {
 
   // Definir los encabezados de la tabla  
+  const navigation = useNavigation();
   const tableHead = ['Nombre', 'Cobrador', 'Barrios', 'Accion'];
   const [rutas, setRutas] = useState([]);
-  const [idCuestion, setIdCuestion] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [nombreRuta, setNombreRuta] = useState('');
-  const [selectedTeam, setSelectedTeam] = useState({});
-  const [selectedTeams, setSelectedTeams] = useState([]);
-  const [cobrador, setCobrador] = useState([])
-  const [barrios, setBarrios] = useState([]);
-
+  
 
   //traer todas las rutas
     const url = Constants.expoConfig.extra.API_BASE_URL; 
@@ -35,115 +29,39 @@ export default function ListRutas() {
         }
     }; 
 
-    //obtener usuarios con roles cobrador
-    const obtenerCobradores = async () => {
-        try {
-        const response = await axiosInstance.get(`${url}api/auth/cobradores`);
-        // console.log('Datos recibidos:', response.data);
-        setCobrador(response.data);
-        
-        } catch (error) {
-        console.log(error);
-        
-        }
-    };
-
-    // Obtener la lista de barrios desde la API
-    const obtenerBarrios = async () => {
-        try {
-        const response = await axiosInstance.get(`${url}api/barrio`);
-        // console.log('Datos recibidos:', response.data);
-        setBarrios(response.data);
-        //setLoading(false); // Indicar que ya se han cargado los datos
-        } catch (error) {
-        console.log(error);
-        //setLoading(false); // Incluso en caso de error, se debe detener la carga
-        }
-    };
-
     useEffect(
         () => {
             obtenerRutas();
-            // obtenerCobradores();
-            // obtenerBarrios();
+            
         },[]
     );
 
-    // sacando los barrio
-    // const getBarrios = () => {
-    // return rutas.flatMap((ruta) => ruta.barrio);
-    // };
+    const cargarRutas = React.useCallback(() => {
+      obtenerRutas();
+    }, []); // Las dependencias están vacías ya que solo queremos que se cree una instancia de la función
+    
+    useFocusEffect(cargarRutas);
+    
     const getBarrios = (barrios) => {
         return barrios.map((barrio) => barrio).join(', ');
       };
 
-    // guardo el 
-  // const verModal = (ruta) => {
-  //   console.log('El ID de la ruta:', ruta.id);
-  //   setIdCuestion(ruta.id)
-  //   setVisible(true);
-  // };
-
-  //controlamos si es ono visible el modal
-  // const handleVisibleModal = () => {
-  //   setSelectedBarrio(null); // Reinicia el estado del barrio seleccionado a null
-  //   setVisible(!visible); // Cambia el estado de visibilidad del Modal
-  // };
 
     // Función para manejar la acción del botón 2
-    const handlEstado = (ruta) => {
+    const handlEstado = async (ruta) => {
         // Implementa la lógica que deseas realizar al presionar el botón 2
-        setIdCuestion(ruta.id)
+        const response = await axiosInstance.patch(`${url}api/rutas/updateEstado/${ruta.id}`)
+        Alert.alert(response.data)
         console.log('Botón 2 presionado para la ruta:', ruta.id);
+        obtenerRutas();
     };
 
     const handlEditar = (ruta) => {
         // Implementa la lógica que deseas realizar al presionar el botón 2
-        setIdCuestion(ruta.id)
+        
+        navigation.navigate('EditarRutas', { rutaId: ruta.id })
         console.log('Botón 1 presionado para la ruta:', ruta.id);
     }
-
-    // Función onChange dentro del componente Ruta
-    // function onChange(val) {
-    //     setSelectedTeam(val);
-    // }
-
-    // Función onMultiChange dentro del componente Ruta
-    // function onMultiChange() {
-    //     return (item) => setSelectedTeams(xorBy(selectedTeams, [item], 'id'))
-    // }
-
-     // Función para transformar el array de barrios a un formato compatible con SelectBox
-    // function transformBarriosToOptions(barrios) {
-    //     return barrios.map((barrio) => ({
-    //     item: barrio.nombre_barrio,
-    //     id: barrio.id,
-    //     }));
-    // }
-
-    // Función para transformar el array de cobradores a un formato compatible con SelectBox
-    // function transformCobradoresToOptions(cobrador) {
-    //     return cobrador.map((cobrado) => ({
-    //     item: cobrado.fullName,
-    //     id: cobrado.id,
-    //     }));
-    // }
-
-    //update rutas
-    // const updateRuta = ()=>{
-    //     try {
-    //         axiosInstance.put(`${url}api/rutas/${idCuestion}`)
-    //         .then(response => {
-    //         console.log(response);
-    //         console.log(response.data);
-    //     })
-    //     } catch (error) {
-    //         console.log(error);
-
-    //     }
-        
-
-    // }
 
     // Crear los datos de la tabla a partir de las rutas proporcionadas
   const tableData = rutas.map((ruta) => [
@@ -162,7 +80,9 @@ export default function ListRutas() {
             style={[styles.btn, styles.btn2]}
             onPress={() => handlEstado(ruta)}
         >
-            <Text style={styles.btnText}>Desactivar</Text>
+            <Text style={styles.btnText}>
+              {ruta.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
+            </Text>
         </TouchableOpacity>
     </View>,
   ]);
@@ -170,10 +90,7 @@ export default function ListRutas() {
     
 
   return (
-    // <ScrollView vertical={true}>
-    <View>
 
-    {/* Contenido fuera del modal */}
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
         <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
@@ -185,44 +102,6 @@ export default function ListRutas() {
         </Table>
       </ScrollView>
     </View>
-
-    {/* <Modal
-      animationType="slide"
-      visible={visible}
-      onRequestClose={handleVisibleModal}
-    >
-     
-      <View style={styles.container}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Nombre Ruta"
-          placeholderTextColor="rgba(0,0,0,0.5)"
-          onChangeText={(text) => setNombreRuta(text)}
-        />
-
-        <SelectBox
-          label="Seleccionar Cobrador"
-          options={transformCobradoresToOptions(cobrador)}
-          selectedValues={selectedTeam}
-          onChange={onChange}
-          hideInputFilter={false}
-        />
-
-        <SelectBox
-          label="Seleccionar Barrios"
-          options={transformBarriosToOptions(barrios)}
-          selectedValues={selectedTeams}
-          onMultiSelect={onMultiChange()}
-          onTapClose={onMultiChange()}
-          isMulti
-        />
-
-        <TouchableOpacity style={styles.button} onPress={updateRuta}>
-          <Text style={styles.buttonText}>Guardar Cambios</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal> */}
-  </View>
   )
 }
 
@@ -248,16 +127,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
       },
-    textInput:{
-        width: '100%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 8,
-        marginBottom: 18,
-        borderRadius: 5,
-        // paddingBottom:20,
-        padding: 10,
-        backgroundColor: 'white',
-      },  
+      
 });

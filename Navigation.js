@@ -8,6 +8,7 @@ import Login from './src/components/Login';
 import Barrio from './src/components/Barrio';
 import Ruta from './src/components/Ruta';
 import ListRutas from './src/components/auxiliares/ListRutas';
+import EditarRutas from './src/components/auxiliares/EditarRutas';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
@@ -28,6 +29,7 @@ function MyStack() {
             <HomeStackNavigator.Screen name="BarrioScreen" component={Barrio} />
             <HomeStackNavigator.Screen name="RutaScreen" component={Ruta} />
             <HomeStackNavigator.Screen name="ListRutas" component={ListRutas} />
+            <HomeStackNavigator.Screen name="EditarRutas" component={EditarRutas} />
             
         </HomeStackNavigator.Navigator>
     );
