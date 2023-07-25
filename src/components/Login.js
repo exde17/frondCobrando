@@ -47,6 +47,7 @@ export default function Login() {
       console.log(token);
     } catch (error) {
       console.log(error);
+      Alert.alert('solicitud fallida, comunicate con admin del servidor')
     }
   
   };

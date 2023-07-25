@@ -76,13 +76,14 @@ const crearRuta = async () => {
     const response = await axiosInstance.post(`${url}api/rutas`, {
       nombre: nombre,
       barrio: selectedTeams.map(item=>{
-      return item.id
+      return item.item
     }),
     user: selectedTeam.id,
     });
     console.log('Datos recibidos:', response.data);
     // setCobrador(response.data);
     alert("Se ha creado la ruta correctamente");
+    navigation.navigate('ListRutas')
   } catch (error) {
     console.log(error);
     alert("No se ha podido crear la ruta");
@@ -99,6 +100,16 @@ function transformCobradoresToOptions(cobrador) {
 
   return (
     <SafeAreaView style={{ margin: 30 }} >
+
+        <View>
+          <TouchableOpacity
+            style={styles.buttonVer}
+            onPress={() => navigation.navigate('ListRutas')}
+          >
+            {/* <Text onPress={() => navigation.navigate('Rutas')} style={{ fontSize: 20, color: 'blue' }}>Ver Rutas</Text> */}
+            <Text style={styles.buttonText}>ver rutas</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.container}>
             <TextInput
                 style={styles.textInput}
@@ -106,45 +117,38 @@ function transformCobradoresToOptions(cobrador) {
                 placeholderTextColor="rgba(0,0,0,0.5)"
                 onChangeText={text => setNombre(text)}
             />
-
-{/* <View style={{ width: '100%', alignItems: 'center' }}>
-        <Text style={{ fontSize: 30, paddingBottom: 20 }}>Demos</Text>
-      </View> */}
-      {/* <Text style={{ fontSize: 20, paddingBottom: 10 }}>Select Demo</Text> */}
-      
-      <SelectBox
-        
-        label="Selecionar Cobrador"
-        options={transformCobradoresToOptions(cobrador)}
-        value={selectedTeam}
-        onChange={onChange}
-        hideInputFilter={false}
-      />
+            
+          <SelectBox
+            
+            label="Selecionar Cobrador"
+            options={transformCobradoresToOptions(cobrador)}
+            value={selectedTeam}
+            onChange={onChange}
+            hideInputFilter={false}
+          />
 
       
-    </View>
-    {/* ////////////////select multiple//////////////////// */}
-      {/* <View style={{ height: 40 }} /> */}
-      {/* <Text style={{ fontSize: 20, paddingBottom: 10 }}>MultiSelect Demo</Text> */}
-      <View style={styles.container}>
-      <SelectBox
-        label="Selecionar Barrios"
-        options={transformBarriosToOptions(barrios)}
-        selectedValues={selectedTeams}
-        onMultiSelect={onMultiChange()}
-        onTapClose={onMultiChange()}
-        isMulti
-      />
-      </View>
+        </View>
+    
+        <View style={styles.container}>
+          <SelectBox
+            label="Selecionar Barrios"
+            options={transformBarriosToOptions(barrios)}
+            selectedValues={selectedTeams}
+            onMultiSelect={onMultiChange()}
+            onTapClose={onMultiChange()}
+            isMulti
+          />
+        </View>
       
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={crearRuta}  
-        >
-          <Text style={styles.buttonText}>Crear</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={crearRuta}  
+          >
+            <Text style={styles.buttonText}>Crear</Text>
+          </TouchableOpacity>
+        </View>
     </SafeAreaView>
   )
 
@@ -186,5 +190,15 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
+    buttonVer:{
+      backgroundColor: '#0C2B9D',
+      padding: 10,
+      borderRadius: 10,
+      // marginTop: 5,
+      marginLeft: '60%',
+      width: 120,
+      alignItems: 'center',
+    
+    }
   })
 
