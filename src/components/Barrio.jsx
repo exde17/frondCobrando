@@ -190,7 +190,7 @@ export default function Barrio() {
                     return(
                         <View style={styles.item_course} key={index}>
                             <View>
-                                <Text style={styles.txt_name}>{index+1}</Text>
+                                {/* <Text style={styles.txt_name}>{index+1}</Text> */}
                                 <Text style={styles.txt_item}>{item.nombre_barrio}</Text>
                             </View>
                             

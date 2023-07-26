@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 
 const HomeStackNavigator = createNativeStackNavigator();
@@ -59,12 +60,12 @@ function MyTabs() {
       }}
       />
       <Tab.Screen 
-      name="Settings" 
-      component={Settings}
+      name="Registro" 
+      component={Register}
       options={{
-        tabBarLabel: 'Settings',
+        tabBarLabel: 'Registro',
         tabBarIcon: ({ color, size }) => (
-            <Fontisto name="player-settings" size={24} color={color} />
+          <AntDesign name="solution1" size={24} color={color} />
             ),
       }}
       />
@@ -85,7 +86,7 @@ function MyTabs() {
       options={{
         tabBarLabel: 'Ruta',
         tabBarIcon: ({ color, size }) => (
-          <FontAwesome5 name="route" size={24} color="black" />
+          <FontAwesome5 name="route" size={24} color={color} />
             ),
       }}
       />
