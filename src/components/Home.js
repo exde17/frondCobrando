@@ -2,55 +2,20 @@ import { FlatList, Text, View, StyleSheet, Alert, SafeAreaView, TouchableOpacity
 import React, {useState, useEffect} from 'react'
 import axiosInstance from '../intersect/axiosInstance';
 import Constants from 'expo-constants'
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Client() {
   const [clientes, setClientes] = useState([]);
   const url = Constants.expoConfig.extra.API_BASE_URL; 
-  // const clientes = [
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  //   {"fullName": "poo", "documento": "polo"},
-  //   {"fullName": "rita", "documento": "pantalon"},
-  //   {"fullName": "paco", "documento": "perez"},
-  // ];
+  const navigation = useNavigation();
 
   //traer los clientes relacionado con el cobrador logueado
   const getClientes = async () =>{
     try {
       const response = await axiosInstance.get(`${url}api/client/cliente`)
       setClientes(response.data)
-      console.log('el dato: ', response.data)
+      // console.log('el dato: ', response.data)
     } catch (error) {
       console.log(error)
       Alert.alert('error al cargar los datos: ', error)
@@ -61,19 +26,29 @@ export default function Client() {
     getClientes()
   }, [])
 
+  
+
   // Componente para renderizar cada elemento de la lista (cliente)
   const ClienteItem = ({ item }) => {
+    const handleClientePress = () => {
+      // Aquí definimos la acción que se realizará al presionar un cliente
+      // Por ejemplo, podemos navegar a otra vista pasando algunos datos
+      navigation.navigate('Client',{clienteId: item.id} );
+    };
+
     return (
+      <TouchableOpacity onPress={handleClientePress}>
       <View style={styles.clienteItem}>
         <Text style={styles.clienteNombre}>{item.fullName}</Text>
         <Text style={styles.clienteApellido}>{item.documento}</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.buttonVer}
-          onPress={console.log('boom')}
+          onPress={()=>{console.log('boom')}}
         >
           <Text style={styles.buttonText}>Ver</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
+      </TouchableOpacity>
     );
   };
 
@@ -145,13 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
-    // marginTop: 10,
-    // marginBottom: 10,
-    // marginLeft: 10,
-    // margin: 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // backgroundColor: '#0C2B9D'
+   
   }
 });
 

@@ -14,6 +14,7 @@ import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import Client from './src/components/Client';
 
 
 const HomeStackNavigator = createNativeStackNavigator();
@@ -31,6 +32,7 @@ function MyStack() {
             <HomeStackNavigator.Screen name="RutaScreen" component={Ruta} />
             <HomeStackNavigator.Screen name="ListRutas" component={ListRutas} />
             <HomeStackNavigator.Screen name="EditarRutas" component={EditarRutas} />
+            <HomeStackNavigator.Screen name="Client" component={Client} />
             
         </HomeStackNavigator.Navigator>
     );
