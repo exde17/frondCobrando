@@ -19,8 +19,8 @@ import Constants from 'expo-constants'
 import { useNavigation } from '@react-navigation/native';
 
 export default function Client() {
-  const route = useRoute();
-  const { clienteId } = route.params;
+  // const route = useRoute();
+  // const { clienteId } = route.params;
   const navigation = useNavigation()
 
   const [nombre, setNombre] = useState('');
@@ -40,7 +40,7 @@ export default function Client() {
   const obtenerRutas = async () => {
     try {
       const response = await axiosInstance.get(`${url}api/rutas`);
-      console.log('Datos recibidos:', response.data);
+      // console.log('Datos recibidos:', response.data);
       setRutas(response.data);
       //setLoading(false); // Indicar que ya se han cargado los datos
     } catch (error) {
@@ -107,7 +107,7 @@ export default function Client() {
       
       <View>
         <Text>Crear Cliente</Text>
-        <Text>{clienteId}</Text>
+        {/* <Text>{clienteId}</Text> */}
       </View>
       <View style={styles.container}>
 

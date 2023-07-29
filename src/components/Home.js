@@ -1,8 +1,9 @@
 import { FlatList, Text, View, StyleSheet, Alert, SafeAreaView, TouchableOpacity } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect,} from 'react'
 import axiosInstance from '../intersect/axiosInstance';
 import Constants from 'expo-constants'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { Entypo } from '@expo/vector-icons';
 
 
 export default function Client() {
@@ -26,7 +27,11 @@ export default function Client() {
     getClientes()
   }, [])
 
+  const cargarClientes = React.useCallback(() => {
+    getClientes();
+  }, []); // Las dependencias están vacías ya que solo queremos que se cree una instancia de la función
   
+  useFocusEffect(cargarClientes);
 
   // Componente para renderizar cada elemento de la lista (cliente)
   const ClienteItem = ({ item }) => {
@@ -54,11 +59,20 @@ export default function Client() {
 
   return (
     <SafeAreaView style={styles.contenedor}>
-    {/* <View style={styles.contenedor}> */}
       <View style={styles.contenedorTitulo}>
-        <Text style={styles.titulo}>Clientes ACtivos</Text>
+        <Text style={styles.titulo}>Clientes Activos</Text>
       </View>
-      
+      <View style={{width:'100%', }}>
+        <TouchableOpacity
+          style={styles.buttonVer}
+          onPress={()=>{navigation.navigate('Client')}}
+        >
+          {/* <Text style={styles.buttonText}>Agregar Cliente</Text> */}
+          <Entypo name="squared-plus" size={40} color="#4CAF50" />
+        </TouchableOpacity>
+      </View>
+    {/* <View style={styles.contenedor}> */}
+            
       <FlatList
         data={clientes}
         keyExtractor={(item) => item.id.toString()}
@@ -96,13 +110,17 @@ const styles = StyleSheet.create({
     marginLeft: '5%'
   },
   buttonVer:{
-    backgroundColor: '#0C2B9D',
-    padding: 10,
-    borderRadius: 10,
+    // backgroundColor: '#0C2B9D',
+    // padding: 10,
+    // borderRadius: 10,
     // marginTop: 5,
-    marginLeft: '60%',
-    width: 120,
-    alignItems: 'center',
+    marginLeft: '85%',
+    
+    
+    
+    // alignItems: 'center',
+    // justifyContent: 'center'
+    
   },
   buttonText: {
     color: 'white',
