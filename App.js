@@ -3,7 +3,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './src/components/Login';
-import Index from './src/components/Index'
+// import Index from './src/components/Index'
 import Navigation from './Navigation'
 
 export default function App() {

@@ -38,7 +38,7 @@ export default function Client() {
     const handleClientePress = () => {
       // Aquí definimos la acción que se realizará al presionar un cliente
       // Por ejemplo, podemos navegar a otra vista pasando algunos datos
-      navigation.navigate('Client',{clienteId: item.id} );
+      navigation.navigate('UpdateClientes',{clienteId: item.id} );
     };
 
     return (

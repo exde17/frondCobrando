@@ -15,6 +15,7 @@ import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Client from './src/components/Client';
+import UpdateClientes from './src/components/auxiliares/UpdateClientes';
 
 
 const HomeStackNavigator = createNativeStackNavigator();
@@ -33,6 +34,7 @@ function MyStack() {
             <HomeStackNavigator.Screen name="ListRutas" component={ListRutas} />
             <HomeStackNavigator.Screen name="EditarRutas" component={EditarRutas} />
             <HomeStackNavigator.Screen name="Client" component={Client} />
+            <HomeStackNavigator.Screen name="UpdateClientes" component={UpdateClientes} />
             
         </HomeStackNavigator.Navigator>
     );
