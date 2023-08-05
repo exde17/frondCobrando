@@ -36,7 +36,7 @@ export default function Client() {
   
   let options = [];
 
-  // obtener la liata de rutas
+  // obtener la lista de rutas
   const obtenerRutas = async () => {
     try {
       const response = await axiosInstance.get(`${url}api/rutas`);

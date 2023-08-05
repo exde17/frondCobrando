@@ -27,6 +27,7 @@ export default function UpdateClientes() {
     const [telefonoFamiliar, setTelefonoFamiliar] = useState('');
     const [selectedTeam, setSelectedTeam] = useState({});
     const [rutas, setRutas] = useState([]);
+    const [ruta2, setRutas2] = useState('')
     const [valselect, setValselect] = useState('')
     const url = Constants.expoConfig.extra.API_BASE_URL;
     const navigation = useNavigation()
@@ -44,6 +45,7 @@ export default function UpdateClientes() {
             setTelefonoFamiliar(response.data.telefonoFamiliar);
             setValselect(response.data.ruta.nombre)
             setSelectedTeam({"id":"1","nombre": {valselect}});
+            setRutas2(response.data.ruta)
             //setLoading(false); // Indicar que ya se han cargado los datos
           }
             catch (error) {
@@ -76,29 +78,25 @@ export default function UpdateClientes() {
 
     const updateCliente = async ()=>{
         try {
-            console.log(`${url}api/client/updateClient/`,
-                {
-                fullName: nombre,
-                documento: documento,
-                telefono: telefono,
-                email: correo,
-                direccion: direccion,
-                telefonoFamiliar: telefonoFamiliar,
-                ruta: selectedTeam.id,
-                }
-            )
-            const response = await axiosInstance.put(`${url}api/client/updateClient/${clienteId}`,JSON.stringify({
-                fullName: nombre,
-                documento: documento,
-                telefono: telefono,
-                email: correo,
-                direccion: direccion,
-                telefonoFamiliar: telefonoFamiliar,
-                ruta: selectedTeam.id,
-                })
+           
+            const dataToUpdate = {
+              fullName: nombre,
+              documento: documento,
+              telefono: telefono,
+              email: correo,
+              direccion: direccion,
+              telefonoFamiliar: telefonoFamiliar
+          };
+  
+          if (selectedTeam.id !== "1") {
+              dataToUpdate.ruta = selectedTeam.id;
+          }
+            
+            const response = await axiosInstance.patch(`${url}api/client/updateClient/${clienteId}`,dataToUpdate
+
             );
             console.log('Datos recibidos:', response.data);
-            Alert.alert('Cliente creado exitosamente');
+            Alert.alert('Cliente creado exitosamente', selectedTeam.id );
             navigation.navigate('HomeScreen');
             //setLoading(false); // Indicar que ya se han cargado los datos
             } catch (error) {
